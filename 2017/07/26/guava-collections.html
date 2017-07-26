@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Guava,JAVA,Collections," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="Guava项目包含我们在基于Java的项目中依赖的几种Google核心库：集合，缓存，原始支持，并发库，常见注释，字符串处理，I / O等。这些工具中的每一个都真的被Google员工在生产服务中每天使用。">
+<meta name="keywords" content="Guava,JAVA,Collections">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Google Guava 介绍2（集合）">
+<meta property="og:url" content="http://blog.ddnet.top/2017/07/26/guava-collections.html">
+<meta property="og:site_name" content="忆流年 BLOG">
+<meta property="og:description" content="Guava项目包含我们在基于Java的项目中依赖的几种Google核心库：集合，缓存，原始支持，并发库，常见注释，字符串处理，I / O等。这些工具中的每一个都真的被Google员工在生产服务中每天使用。">
+<meta property="og:updated_time" content="2017-07-26T07:58:34.774Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Google Guava 介绍2（集合）">
+<meta name="twitter:description" content="Guava项目包含我们在基于Java的项目中依赖的几种Google核心库：集合，缓存，原始支持，并发库，常见注释，字符串处理，I / O等。这些工具中的每一个都真的被Google员工在生产服务中每天使用。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '8I2PAGHO14',
+      apiKey: '5b3c74de0001450a6c0fe55e959f1e3f',
+      indexName: 'ddnetblog',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.ddnet.top/2017/07/26/guava-collections.html"/>
+
+
+
+
+
+  <title>Google Guava 介绍2（集合） | 忆流年 BLOG</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">忆流年 BLOG</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.ddnet.top/2017/07/26/guava-collections.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Vinson Ding">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="忆流年 BLOG">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Google Guava 介绍2（集合）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-26T00:00:00+08:00">
+                2017-07-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JAVA/" itemprop="url" rel="index">
+                    <span itemprop="name">JAVA</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/07/26/guava-collections.html" class="leancloud_visitors" data-flag-title="Google Guava 介绍2（集合）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>Guava项目包含我们在基于Java的项目中依赖的几种Google核心库：集合，缓存，原始支持，并发库，常见注释，字符串处理，I / O等。这些工具中的每一个都真的被Google员工在生产服务中每天使用。<br><a id="more"></a></p>
+<h2 id="不可变集合"><a href="#不可变集合" class="headerlink" title="不可变集合"></a>不可变集合</h2><p>不可变对象有相应多的优点，其中包含：</p>
+<ul>
+<li>线程安全，不存在多线程竞争及锁的问题。</li>
+<li>不支持改变，在空间和时间上比较有优势</li>
+<li>可以常量使用<br>JKD也提供<em>Collections.unmodifiableXXX</em>方法，使用不方便，并且不安全。<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Test</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testJkd</span><span class="params">()</span> </span>&#123;</div><div class="line">    List&lt;String&gt; list = Arrays.asList(<span class="string">"one"</span>, <span class="string">"two"</span>, <span class="string">"three"</span>);</div><div class="line">    List&lt;String&gt; unmodifiableList = Collections.unmodifiableList(list);</div><div class="line">    String updateStr = <span class="string">"update"</span>;</div><div class="line">    list.set(<span class="number">1</span>, updateStr);</div><div class="line">    Assert.assertEquals(unmodifiableList.get(<span class="number">1</span>), updateStr);</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        unmodifiableList.set(<span class="number">1</span>, <span class="string">"a"</span>);</div><div class="line">        Assert.fail(<span class="string">"不可变类不能被改变"</span>);</div><div class="line">    &#125;<span class="keyword">catch</span> (UnsupportedOperationException e)&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</blockquote>
+<p>通过修改list可以达到修改unmodifiableList的目的</p>
+<h3 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ImmutableSet&lt;String&gt; immutableSet= ImmutableSet.&lt;String&gt;builder().add(<span class="string">"a"</span>).add(<span class="string">"b"</span>).build();</div><div class="line">ImmutableSet&lt;String&gt; immutableSet1 = ImmutableSet.of(<span class="string">"a"</span>,<span class="string">"b"</span>,<span class="string">"c"</span>);</div><div class="line">ImmutableList.copyOf(immutableSet);</div><div class="line">immutableSet.asList().subList(<span class="number">0</span>,<span class="number">1</span>);</div></pre></td></tr></table></figure>
+<h3 id="类型列表"><a href="#类型列表" class="headerlink" title="类型列表"></a>类型列表</h3><table>
+<thead>
+<tr>
+<th>接口</th>
+<th>JDK or Guava?</th>
+<th>不可变版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Collection</td>
+<td>JDK</td>
+<td>ImmutableCollection</td>
+</tr>
+<tr>
+<td>List</td>
+<td>JDK</td>
+<td>ImmutableList</td>
+</tr>
+<tr>
+<td>Set</td>
+<td>JDK</td>
+<td>ImmutableSet</td>
+</tr>
+<tr>
+<td>SortedSet/NavigableSet</td>
+<td>JDK</td>
+<td>ImmutableSortedSet</td>
+</tr>
+<tr>
+<td>Map</td>
+<td>JDK</td>
+<td>ImmutableMap</td>
+</tr>
+<tr>
+<td>SortedMap</td>
+<td>JDK</td>
+<td>ImmutableSortedMap</td>
+</tr>
+<tr>
+<td>Multiset</td>
+<td>Guava</td>
+<td>ImmutableMultiset</td>
+</tr>
+<tr>
+<td>SortedMultiset</td>
+<td>Guava</td>
+<td>ImmutableSortedMultiset</td>
+</tr>
+<tr>
+<td>Multimap</td>
+<td>Guava</td>
+<td>ImmutableMultimap</td>
+</tr>
+<tr>
+<td>ListMultimap</td>
+<td>Guava</td>
+<td>ImmutableListMultimap</td>
+</tr>
+<tr>
+<td>SetMultimap</td>
+<td>Guava</td>
+<td>ImmutableSetMultimap</td>
+</tr>
+<tr>
+<td>BiMap</td>
+<td>Guava</td>
+<td>ImmutableBiMap</td>
+</tr>
+<tr>
+<td>ClassToInstanceMap</td>
+<td>Guava</td>
+<td>ImmutableClassToInstanceMap</td>
+</tr>
+<tr>
+<td>Table</td>
+<td>Guava</td>
+<td>ImmutableTable</td>
+</tr>
+</tbody>
+</table>
+<h2 id="新集合"><a href="#新集合" class="headerlink" title="新集合"></a>新集合</h2><p>Guava扩展了多种JDK没有提供的集合类型，新扩展的集合类型都支持JDK集合规范</p>
+<h3 id="Multiset"><a href="#Multiset" class="headerlink" title="Multiset"></a>Multiset</h3><blockquote>
+<p>在集合中元素被允许出现不止一次的出现。.在多重集合中，与集合相反，与元组相反，元素的顺序是无关的：多重集合{a，a，b}和{ a，b，a}相等。</p>
+</blockquote>
+<ul>
+<li>常用方法</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>count(E)</td>
+<td>返回元素的数量，元素不存在返回0</td>
+</tr>
+<tr>
+<td>elementSet()</td>
+<td>返回唯一的元素列表</td>
+</tr>
+<tr>
+<td>entrySet()</td>
+<td>返回Set<multiset.entry<e>&gt;</multiset.entry<e></td>
+</tr>
+<tr>
+<td>add(E,count)</td>
+<td>增加元素数量 </td>
+</tr>
+<tr>
+<td>remove(E,count)</td>
+<td>减少元素数,如果数量小于等于0则删除元素</td>
+</tr>
+<tr>
+<td>setCount(E,count)</td>
+<td>设置元素数量 ，如果小于等于0则删除元素</td>
+</tr>
+<tr>
+<td>size()</td>
+<td>返回所有元素数量和</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Multiset和Map<e,integer>不相同的地方<ul>
+<li>Map中可以出现数量小于0的情况</li>
+<li>Multiset操作比较方便</li>
+</ul>
+</e,integer></li>
+<li>常用实现及JDK原生类</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Map</th>
+<th>Corresponding Multiset</th>
+<th>Supports null elements</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HashMap</td>
+<td>HashMultiset</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>TreeMap</td>
+<td>TreeMultiset</td>
+<td>Yes (if the comparator does)</td>
+</tr>
+<tr>
+<td>LinkedHashMap</td>
+<td>LinkedHashMultiset</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>ConcurrentHashMap</td>
+<td>ConcurrentHashMultiset</td>
+<td>No</td>
+</tr>
+<tr>
+<td>ImmutableMap</td>
+<td>ImmutableMultiset</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Multimap"><a href="#Multimap" class="headerlink" title="Multimap"></a>Multimap</h3><p>允许同一个key中有多个value</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">a -&gt; 1 a -&gt; 2 a -&gt; 4 b -&gt; 3 c -&gt; 5//键值和value一一对应情况</div><div class="line">a -&gt; [1, 2, 4] b -&gt; [3] c -&gt; [5] //多value情况</div></pre></td></tr></table></figure>
+<h3 id="BiMap"><a href="#BiMap" class="headerlink" title="BiMap"></a>BiMap</h3><p>双向Map,键值和值可以互换的map。比如需要把用户名和用户ID一一对应，可以通过用户名查询到用户ID，也可以用户ID查询到用户名。</p>
+<ul>
+<li><p>通常的作法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Map&lt;String, Integer&gt; nameToId = Maps.newHashMap();</div><div class="line">Map&lt;Integer, String&gt; idToName = Maps.newHashMap();</div><div class="line"></div><div class="line">nameToId.put(<span class="string">"Bob"</span>, <span class="number">42</span>);</div><div class="line">idToName.put(<span class="number">42</span>, <span class="string">"Bob"</span>);</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用BiMap</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">BiMap&lt;String, Integer&gt; userId = HashBiMap.create();</div><div class="line">String userForId = userId.inverse().get(id);<span class="comment">//通过用户ID进行查询</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>相关的实现</p>
+<table>
+<thead>
+<tr>
+<th>Key-Value实现</th>
+<th>Value-Key 实现</th>
+<th>双向实现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HashMap</td>
+<td>HashMap</td>
+<td>HashBiMap</td>
+</tr>
+<tr>
+<td>ImmutableMap</td>
+<td>ImmutableMap</td>
+<td>ImmutableBiMap</td>
+</tr>
+<tr>
+<td>EnumMap</td>
+<td>EnumMap</td>
+<td>EnumBiMap</td>
+</tr>
+<tr>
+<td>EnumMap</td>
+<td>HashMap</td>
+<td>EnumHashBiMap</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Table"><a href="#Table" class="headerlink" title="Table"></a>Table</h3><p>Guava中的表格通过行键、列键和值组成的动态二维表格。主要实现有<em>HashBasedTable</em>，<em>TreeBasedTable</em>，<em>ImmutableTable</em>，<em>ArrayTable</em>。例如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Table&lt;DateOfBirth, LastName, PersonalRecord&gt; records = HashBasedTable.create();</div><div class="line">records.put(someBirthday, <span class="string">"Schmo"</span>, recordA);</div><div class="line">records.put(someBirthday, <span class="string">"Doe"</span>, recordB);</div><div class="line">records.put(otherBirthday, <span class="string">"Doe"</span>, recordC);</div><div class="line"></div><div class="line">records.row(someBirthday); <span class="comment">// returns a Map mapping "Schmo" to recordA, "Doe" to recordB</span></div><div class="line">records.column(<span class="string">"Doe"</span>); <span class="comment">// returns a Map mapping someBirthday to recordB, otherBirthday to recordC</span></div></pre></td></tr></table></figure></p>
+<p>其中DateOfBirth是行号，LastName是列值，PersonalRecord是内容。</p>
+<p>常用方法</p>
+<ul>
+<li>rowMap(),把Table<r, c,="" v=""> 转换为 Map<r, map<c,="" v="">&gt;</r,></r,></li>
+<li>row(R) ,返回非Null的Map<c, v=""></c,></li>
+<li>cellSet(),返回Set<cell<r,c,v>&gt;数据</cell<r,c,v></li>
+</ul>
+<h3 id="ClassToInstanceMap"><a href="#ClassToInstanceMap" class="headerlink" title="ClassToInstanceMap"></a>ClassToInstanceMap</h3><p>用于替换Map<class<? extends="" x="">, X&gt;。并且在put数据时会检查k-v是否类型是否一致。有 <em>MutableClassToInstanceMap</em> 和 <em>ImmutableClassToInstanceMap</em> 两种实现<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ClassToInstanceMap&lt;Number&gt; numberDefaults = MutableClassToInstanceMap.create();</div><div class="line">numberDefaults.putInstance(Integer.class, Integer.valueOf(<span class="number">0</span>));</div></pre></td></tr></table></figure></class<?></p>
+<h3 id="RangeSet"><a href="#RangeSet" class="headerlink" title="RangeSet"></a>RangeSet</h3><p>RangeSet描述了一组断开的非空范围。将范围添加到可变RangeSet时，任何连接的范围都会合并在一起，并且忽略空范围。例如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">RangeSet&lt;Integer&gt; rangeSet = TreeRangeSet.create();</div><div class="line">   rangeSet.add(Range.closed(<span class="number">1</span>, <span class="number">10</span>)); <span class="comment">// &#123;[1, 10]&#125;</span></div><div class="line">   rangeSet.add(Range.closedOpen(<span class="number">11</span>, <span class="number">15</span>)); <span class="comment">// disconnected range: &#123;[1, 10], [11, 15)&#125;</span></div><div class="line">   rangeSet.add(Range.closedOpen(<span class="number">15</span>, <span class="number">20</span>)); <span class="comment">// connected range; &#123;[1, 10], [11, 20)&#125;</span></div><div class="line">   rangeSet.add(Range.openClosed(<span class="number">0</span>, <span class="number">0</span>)); <span class="comment">// empty range; &#123;[1, 10], [11, 20)&#125;</span></div><div class="line">   rangeSet.remove(Range.open(<span class="number">5</span>, <span class="number">10</span>)); <span class="comment">// splits [1, 10]; &#123;[1, 5], [10, 10], [11, 20)&#125;</span></div></pre></td></tr></table></figure></p>
+<h3 id="RangeMap"><a href="#RangeMap" class="headerlink" title="RangeMap"></a>RangeMap</h3><p>RangeMap是描述从不相交，非空范围到值的映射的集合类型。与RangeSet不同，即使相邻的范围被映射到相同的值，RangeMap也不会“合并”相邻的映射。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">RangeMap&lt;Integer, String&gt; rangeMap = TreeRangeMap.create();</div><div class="line">rangeMap.put(Range.closed(<span class="number">1</span>, <span class="number">10</span>), <span class="string">"foo"</span>); <span class="comment">// &#123;[1, 10] =&gt; "foo"&#125;</span></div><div class="line">rangeMap.put(Range.open(<span class="number">3</span>, <span class="number">6</span>), <span class="string">"bar"</span>); <span class="comment">// &#123;[1, 3] =&gt; "foo", (3, 6) =&gt; "bar", [6, 10] =&gt; "foo"&#125;</span></div><div class="line">rangeMap.put(Range.open(<span class="number">10</span>, <span class="number">20</span>), <span class="string">"foo"</span>); <span class="comment">// &#123;[1, 3] =&gt; "foo", (3, 6) =&gt; "bar", [6, 10] =&gt; "foo", (10, 20) =&gt; "foo"&#125;</span></div><div class="line">rangeMap.remove(Range.closed(<span class="number">5</span>, <span class="number">11</span>)); <span class="comment">// &#123;[1, 3] =&gt; "foo", (3, 5) =&gt; "bar", (11, 20) =&gt; "foo"&#125;</span></div><div class="line"></div><div class="line">RangeMap&lt;Integer, String&gt; rangeMap = TreeRangeMap.create();</div><div class="line">rangeMap.put(Range.closedOpen(<span class="number">0</span>, <span class="number">10</span>), <span class="string">"a"</span>);</div><div class="line">rangeMap.put(Range.closedOpen(<span class="number">10</span>, <span class="number">20</span>), <span class="string">"b"</span>);</div><div class="line">rangeMap.put(Range.closedOpen(<span class="number">20</span>, <span class="number">20</span>), <span class="string">"c"</span>);</div><div class="line">Assert.assertEquals(<span class="string">"a"</span>, rangeMap.get(<span class="number">0</span>));</div><div class="line">Assert.assertEquals(<span class="string">"b"</span>, rangeMap.get(<span class="number">10</span>));</div><div class="line">Assert.assertEquals(<span class="keyword">null</span>, rangeMap.get(<span class="number">20</span>));</div></pre></td></tr></table></figure>
+<h2 id="集合工具类"><a href="#集合工具类" class="headerlink" title="集合工具类"></a>集合工具类</h2><p>工具类主要简化集合创建及常用的一些操作</p>
+<table>
+<thead>
+<tr>
+<th>接口</th>
+<th>JDK or Guava?</th>
+<th>工具类</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Collection</td>
+<td>JDK</td>
+<td>Collections2 (avoiding conflict with java.util.Collections)</td>
+</tr>
+<tr>
+<td>List</td>
+<td>JDK</td>
+<td>Lists</td>
+</tr>
+<tr>
+<td>Set</td>
+<td>JDK</td>
+<td>Sets</td>
+</tr>
+<tr>
+<td>SortedSet</td>
+<td>JDK</td>
+<td>Sets</td>
+</tr>
+<tr>
+<td>Map</td>
+<td>JDK</td>
+<td>Maps</td>
+</tr>
+<tr>
+<td>SortedMap</td>
+<td>JDK</td>
+<td>Maps</td>
+</tr>
+<tr>
+<td>Queue</td>
+<td>JDK</td>
+<td>Queues</td>
+</tr>
+<tr>
+<td>Multiset</td>
+<td>Guava</td>
+<td>Multisets</td>
+</tr>
+<tr>
+<td>Multimap</td>
+<td>Guava</td>
+<td>Multimaps</td>
+</tr>
+<tr>
+<td>BiMap</td>
+<td>Guava</td>
+<td>Maps</td>
+</tr>
+<tr>
+<td>Table</td>
+<td>Guava</td>
+<td>Tables</td>
+</tr>
+</tbody>
+</table>
+<h2 id="相关资料"><a href="#相关资料" class="headerlink" title="相关资料"></a>相关资料</h2><ol>
+<li><a href="https://github.com/google/guava" target="_blank" rel="external">Guava on github</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/java/j-lo-googlecollection/" target="_blank" rel="external">Google Guava Collections 使用介绍</a></li>
+<li><a href="/2017/07/21/guava-tools.html" title="Google Guava 介绍1（基本工具类）">Google Guava 介绍1（基本工具类）</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Guava/" rel="tag"># Guava</a>
+          
+            <a href="/tags/JAVA/" rel="tag"># JAVA</a>
+          
+            <a href="/tags/Collections/" rel="tag"># Collections</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/21/guava-tools.html" rel="next" title="Google Guava 介绍1（基本工具类）">
+                <i class="fa fa-chevron-left"></i> Google Guava 介绍1（基本工具类）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Vinson Ding" />
+          <p class="site-author-name" itemprop="name">Vinson Ding</p>
+           
+              <p class="site-description motion-element" itemprop="description">简简单单记录</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#不可变集合"><span class="nav-number">1.</span> <span class="nav-text">不可变集合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用操作"><span class="nav-number">1.1.</span> <span class="nav-text">常用操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类型列表"><span class="nav-number">1.2.</span> <span class="nav-text">类型列表</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新集合"><span class="nav-number">2.</span> <span class="nav-text">新集合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Multiset"><span class="nav-number">2.1.</span> <span class="nav-text">Multiset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multimap"><span class="nav-number">2.2.</span> <span class="nav-text">Multimap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BiMap"><span class="nav-number">2.3.</span> <span class="nav-text">BiMap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Table"><span class="nav-number">2.4.</span> <span class="nav-text">Table</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ClassToInstanceMap"><span class="nav-number">2.5.</span> <span class="nav-text">ClassToInstanceMap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RangeSet"><span class="nav-number">2.6.</span> <span class="nav-text">RangeSet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RangeMap"><span class="nav-number">2.7.</span> <span class="nav-text">RangeMap</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集合工具类"><span class="nav-number">3.</span> <span class="nav-text">集合工具类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关资料"><span class="nav-number">4.</span> <span class="nav-text">相关资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vinson Ding</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2139390"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.1"></script>
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("GFjyme5OXn0s23U294VNfQYE-gzGzoHsz", "8S7hyFWJa7m76AD1gSgCuclg");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
